@@ -7,10 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ShameJarBE.Models;
 
@@ -23,16 +25,16 @@ namespace ShameJarBE.Controllers
         private readonly DataContext _context;
         private AuthSettings _authSettings;
 
-        public AuthController(DataContext context, AuthSettings authSettings)
+        public AuthController(DataContext context, IOptions<AuthSettings> authSettings)
         {
             _context = context;
-            _authSettings = authSettings;
+            _authSettings = authSettings.Value;
         }
 
         private string CreateToken(User user)
         {
-            string secret = _authSettings.SECRET; // Dev
-                                                  // string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
+            // string secret = _authSettings.SECRET; // Dev
+            string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
@@ -49,6 +51,7 @@ namespace ShameJarBE.Controllers
             return Ok(
                 new
                 {
+                    UserID = user.UserID,
                     Username = user.Username,
                     Token = token
                 });
@@ -66,8 +69,9 @@ namespace ShameJarBE.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] LoginUser user) // From https://stackoverflow.com/questions/39802164/asp-net-mvc-how-to-hash-password
+        public IActionResult Login([FromBody] LoginUser user)
         {
+            var invalidLoginResp = StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password");
             string username = user.Username;
             string password = user.Password;
 
@@ -78,11 +82,11 @@ namespace ShameJarBE.Controllers
 
             User _user = _context.User.SingleOrDefault(x => x.Username == username);
 
-            if (_user == null) return Unauthorized();
+            if (_user == null) return invalidLoginResp;
 
             bool passMatches = Crypto.VerifyHashedPassword(_user.Password, password);
 
-            if (!passMatches) return Unauthorized();
+            if (!passMatches) return invalidLoginResp;
 
             return AuthResult(_user);
         }

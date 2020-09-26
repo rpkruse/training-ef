@@ -48,11 +48,26 @@ namespace ShameJarBE.Controllers
         [HttpPost]
 
 
-        // TODO: https://stackoverflow.com/questions/39802164/asp-net-mvc-how-to-hash-password
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody] User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            User _user = await _context.User.SingleOrDefaultAsync(x => x.Username == user.Username);
+
+            if (_user != null)
+            {
+                ModelState.AddModelError("Error", "Username already taken");
+                return BadRequest(ModelState);
+            }
+
             user.Password = Crypto.HashPassword(user.Password);
+
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUser", new { id = user.UserID }, user);
         }

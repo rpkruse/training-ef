@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using ShameJarBE.Models;
 
 namespace ShameJarBE
@@ -29,6 +32,33 @@ namespace ShameJarBE
         {
             // string connection = Configuration.GetConnectionString("DATABASE"); //DEV
             string connection = Environment.GetEnvironmentVariable("DATABASE"); //PROD
+
+            var authSettings = Configuration.GetSection("AuthSettings");
+            services.Configure<AuthSettings>(authSettings);
+
+            string secret = authSettings.Get<AuthSettings>().SECRET; //DEV
+            // string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
+
+            var key = Encoding.UTF8.GetBytes(secret);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
+                    ValidateIssuer = false,
+                };
+            });
 
             services.AddDbContext<DataContext>(options => options.UseMySql(connection));
 
@@ -53,6 +83,8 @@ namespace ShameJarBE
             }
 
             app.UseCors("AllowAll");
+
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 
