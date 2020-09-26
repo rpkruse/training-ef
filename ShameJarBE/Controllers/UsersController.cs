@@ -45,7 +45,23 @@ namespace ShameJarBE.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpGet("isAvailable/{username}")]
+        public async Task<IActionResult> IsUsernameAvailable([FromRoute] string username)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            User user = await _context.User.AsNoTracking().SingleOrDefaultAsync(x => x.Username == username);
+
+            if (user == null)
+            {
+                return Ok(true);
+            }
+
+            return Ok(false);
+        }
 
 
         [HttpPost]
@@ -56,7 +72,7 @@ namespace ShameJarBE.Controllers
                 return BadRequest(ModelState);
             }
 
-            User _user = await _context.User.SingleOrDefaultAsync(x => x.Username == user.Username);
+            User _user = await _context.User.AsNoTracking().SingleOrDefaultAsync(x => x.Username == user.Username);
 
             if (_user != null)
             {
