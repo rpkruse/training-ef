@@ -64,10 +64,15 @@ namespace ShameJarBE
 
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+                options.AddPolicy("AllowAll",
+                   builder =>
+                   {
+                       builder
+                      .AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials();
+                   });
             });
 
             services.AddControllers();
