@@ -36,8 +36,8 @@ namespace ShameJarBE
             var authSettings = Configuration.GetSection("AuthSettings");
             services.Configure<AuthSettings>(authSettings);
 
-            string secret = authSettings.Get<AuthSettings>().SECRET; //DEV
-            // string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
+            // string secret = authSettings.Get<AuthSettings>().SECRET; //DEV
+            string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
 
             var key = Encoding.UTF8.GetBytes(secret);
 
