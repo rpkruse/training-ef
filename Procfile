@@ -1,1 +1,1 @@
-WEB $HOME/heroku_output && ./TrainingEfBE
+cd $HOME/heroku_output && ./TrainingEfBE
