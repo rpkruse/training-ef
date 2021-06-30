@@ -5,13 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ShameJarBE.Models
+namespace TrainingEfBE.Models
 {
     public partial class User
     {
         public User()
         {
-            // UserCompetitions = new HashSet<UserCompetition>();
         }
 
         [Key]
@@ -23,8 +22,5 @@ namespace ShameJarBE.Models
 
         [StringLength(900)]
         public string Password { get; set; }
-
-        /*[InverseProperty("Competition")]
-        public ICollection<UserCompetition> UserCompetitions { get; set; }*/
     }
 }

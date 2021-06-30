@@ -14,9 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using ShameJarBE.Models;
+using TrainingEfBE.Models;
 
-namespace ShameJarBE
+namespace TrainingEfBE
 {
     public class Startup
     {
@@ -30,35 +30,43 @@ namespace ShameJarBE
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // string connection = Configuration.GetConnectionString("DATABASE"); //DEV
+            //string connection = Configuration.GetConnectionString("DATABASE"); //DEV
             string connection = Environment.GetEnvironmentVariable("DATABASE"); //PROD
 
-            var authSettings = Configuration.GetSection("AuthSettings");
-            services.Configure<AuthSettings>(authSettings);
+
+
+
+            /*
+             * NOTE:
+             * EVERYTHING BELOW CAN BE IGNORED FOR NOW WE WILL SLOWLY ADD IT IN
+             * below adds hashing and auth tokens to our calls to make things more secure
+             */
+            //var authSettings = Configuration.GetSection("AuthSettings");
+            //services.Configure<AuthSettings>(authSettings);
 
             // string secret = authSettings.Get<AuthSettings>().SECRET; //DEV
-            string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
+            //string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
 
-            var key = Encoding.UTF8.GetBytes(secret);
+            //var key = Encoding.UTF8.GetBytes(secret);
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(cfg =>
-            {
-                cfg.RequireHttpsMetadata = false;
-                cfg.SaveToken = true;
-                cfg.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuerSigningKey = true,
-                    ValidateAudience = false,
-                    ValidateLifetime = false,
-                    ValidateIssuer = false,
-                };
-            });
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(cfg =>
+            //{
+            //    cfg.RequireHttpsMetadata = false;
+            //    cfg.SaveToken = true;
+            //    cfg.TokenValidationParameters = new TokenValidationParameters()
+            //    {
+            //        IssuerSigningKey = new SymmetricSecurityKey(key),
+            //        ValidateIssuerSigningKey = true,
+            //        ValidateAudience = false,
+            //        ValidateLifetime = false,
+            //        ValidateIssuer = false,
+            //    };
+            //});
 
             services.AddDbContext<DataContext>(options => options.UseMySql(connection));
 
