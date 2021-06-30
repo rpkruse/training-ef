@@ -17,7 +17,7 @@ namespace TrainingEfBE.Models
         [Column("UserID")]
         public int UserID { get; set; }
 
-        [StringLength(45)]
+        [StringLength(100)]
         public string Username { get; set; }
 
         [StringLength(900)]
