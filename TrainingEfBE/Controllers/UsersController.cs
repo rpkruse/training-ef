@@ -73,8 +73,20 @@ namespace TrainingEfBE.Controllers
             return CreatedAtAction("GetUser", new { id = user.UserID }, user);
         }
 
-        [HttpDelete("{id}")]
+        [HttpPost("login")]
+        public IActionResult AttempLogin([FromBody] User user) {
+            User _user = _userAPI.GetUser(user.Username);
 
+            if (_user == null || (user.Password != _user.Password))
+            {
+                ModelState.AddModelError("Error", "Invalid username/password");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(_user);
+        }
+
+        [HttpDelete("{id}")]
         public IActionResult DeleteUser([FromRoute] int id)
         {
             User user = _userAPI.GetUser(id);
@@ -90,7 +102,6 @@ namespace TrainingEfBE.Controllers
         }
 
         [HttpPut]
-
         public IActionResult UpdateUser([FromBody] User user)
         {
             User _user = _userAPI.GetUser(user.UserID);
@@ -105,8 +116,5 @@ namespace TrainingEfBE.Controllers
             return Ok();
 
         }
-
-
-
     }
 }
