@@ -72,5 +72,41 @@ namespace TrainingEfBE.Controllers
 
             return CreatedAtAction("GetUser", new { id = user.UserID }, user);
         }
+
+        [HttpDelete("{id}")]
+
+        public IActionResult DeleteUser([FromRoute] int id)
+        {
+            User user = _userAPI.GetUser(id);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            _userAPI.DeleteUser(id);
+
+            return Ok();
+        }
+
+        [HttpPut]
+
+        public IActionResult UpdateUser([FromBody] User user)
+        {
+            User _user = _userAPI.GetUser(user.UserID);
+
+            if(_user == null)
+            {
+                ModelState.AddModelError("Error", "User not found");
+                return BadRequest(ModelState);
+            }
+
+            _userAPI.UpdateUser(user);
+            return Ok();
+
+        }
+
+
+
     }
 }
