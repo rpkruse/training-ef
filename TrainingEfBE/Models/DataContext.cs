@@ -10,6 +10,8 @@ namespace TrainingEfBE.Models
     {
         public virtual DbSet<User> User { get; set; }
 
+        public virtual DbSet<Post> Post { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     }
 }
