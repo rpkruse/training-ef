@@ -20,24 +20,29 @@ namespace TrainingEfBE.API.Posts
             return _postData.GetPosts();
         }
 
-        public List<Post> GetPostByUID(int UserID) {
+        public List<Post> GetPostByUID(int UserID) 
+        {
             return _postData.GetPostByUID(UserID);
         }
-        public Post GetPostByPID(int PostID){
+
+        public Post GetPostByPID(int PostID)
+        {
             return _postData.GetPostByPID(PostID);
         }
-        public Post AddPost(Post Post){
-            
+
+        public Post AddPost(Post Post)
+        {   
             return _postData.AddPost(Post);
-
         }
-        public Post UpdatePost(Post Post){
+
+        public Post UpdatePost(Post Post)
+        {
             return _postData.UpdatePost(Post);
-
         }
-        public bool DeletePost(int PostID){
-            return _postData.DeletePost(PostID);
 
+        public bool DeletePost(int PostID)
+        {
+            return _postData.DeletePost(PostID);
         }
     }
 }
