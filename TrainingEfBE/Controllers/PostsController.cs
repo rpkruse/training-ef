@@ -26,8 +26,6 @@ namespace TrainingEfBE.Controllers
             _userAPI = new UserAPI(new UserData(_context));
         }
 
-
-
         [HttpGet]
         public List<Post> Get()
         {
@@ -55,7 +53,6 @@ namespace TrainingEfBE.Controllers
             return Ok(posts);
         }
 
-
         [HttpPost]
         public IActionResult AddPost([FromBody] Post post)
         {
@@ -77,7 +74,6 @@ namespace TrainingEfBE.Controllers
 
             return CreatedAtAction("GetPostByPID", new { id = post.PostID }, post);
         }
-
 
         [HttpDelete("byPID/{id}")]
         public IActionResult DeletePost([FromRoute] int id)
@@ -109,15 +105,6 @@ namespace TrainingEfBE.Controllers
             return Ok();
 
         }
-
-
-
-
-
-
-
-
-
 
     }
 
