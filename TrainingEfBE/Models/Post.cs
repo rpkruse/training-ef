@@ -20,8 +20,9 @@ namespace TrainingEfBE.Models
         [StringLength(10000)]
         public string Message { get; set; }
 
+        public virtual User User { get; set; }
         
-        public DateTime CreatedDate;
+        public DateTime CreatedDate { get; set; }
 
         public int Rating { get; set; }
 

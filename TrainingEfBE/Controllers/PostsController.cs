@@ -91,7 +91,7 @@ namespace TrainingEfBE.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateUser([FromBody] Post post)
+        public IActionResult UpdatePost([FromBody] Post post)
         {
             Post _post = _postAPI.GetPostByPID(post.PostID);
 
