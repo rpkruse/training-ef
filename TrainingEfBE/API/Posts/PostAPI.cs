@@ -32,6 +32,7 @@ namespace TrainingEfBE.API.Posts
 
         public Post AddPost(Post Post)
         {   
+
             return _postData.AddPost(Post);
         }
 

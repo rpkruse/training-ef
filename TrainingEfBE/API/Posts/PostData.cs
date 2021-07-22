@@ -20,11 +20,10 @@ namespace TrainingEfBE.API.Posts
         public Post AddPost(Post post)
         {
             _context.Post.Add(post);
-
-            
             _context.SaveChanges();
+            var _post = _context.Post.Include(u => u.User).SingleOrDefault(p => p.PostID == post.PostID);
 
-            return post;
+            return _post;
         }
 
         public bool DeletePost(int PostID)
@@ -54,7 +53,7 @@ namespace TrainingEfBE.API.Posts
 
         public List<Post> GetPosts()
         {
-            return _context.Post.ToList();
+            return _context.Post.Include(u => u.User).ToList();
         }
 
         public Post UpdatePost(Post post)

@@ -21,7 +21,7 @@ namespace TrainingEfBE.API.Users
 
         public List<User> GetUsers()
         {
-            return _context.User.ToList();
+            return _context.User.Include(p => p.Posts).ToList();
         }
 
         public User GetUser(int userID)
