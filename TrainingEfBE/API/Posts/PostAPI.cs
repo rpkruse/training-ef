@@ -17,7 +17,9 @@ namespace TrainingEfBE.API.Posts
 
         public List<Post> GetPosts()
         {
-            return _postData.GetPosts();
+            var posts = _postData.GetPosts();
+            posts = posts.OrderByDescending(val => val.Rating).ToList();
+            return posts;
         }
 
         public List<Post> GetPostByUID(int UserID) 
@@ -44,6 +46,23 @@ namespace TrainingEfBE.API.Posts
         public bool DeletePost(int PostID)
         {
             return _postData.DeletePost(PostID);
+        }
+
+        public List<Post> GetPostsByRoomID(int RoomID)
+        {
+            //return _postData.GetPostsByRoomID(RoomID);
+            return _postData.GetPostsByRoomID(RoomID).OrderByDescending(val => val.Rating).ToList();
+
+        }
+
+        public bool AddUserUpvote(int postID, int userID)
+        {
+            return _postData.AddUpvote(postID, userID);
+        }
+
+        public bool AddUserDownvote(int postID, int userID)
+        {
+            return _postData.AddDownvote(postID, userID);
         }
     }
 }

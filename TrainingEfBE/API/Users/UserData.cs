@@ -64,5 +64,26 @@ namespace TrainingEfBE.API.Users
 
             return true;
         }
+
+        public List<User> GetUsersByRoomID(int RoomID)
+        {
+            var userRoomList = _context.UserRoom.AsNoTracking().Where(u => u.RoomID == RoomID).ToList();
+            var userList = new List<User>();
+
+            //userList.AddRange(_context.Room.Where(r => r.RoomID == RoomID)
+            //    .Join(_context.UserRoom
+            //    , ur => ur.RoomID
+            //    , (ur) => new { ur })
+            //    .Join(_context.User
+            //    , u => new { u })
+            //    );
+
+            foreach (UserRoom u in userRoomList)
+            {
+                userList.Add(this.GetUser(u.UserID));
+            }
+
+            return userList;
+        }
     }
 }
