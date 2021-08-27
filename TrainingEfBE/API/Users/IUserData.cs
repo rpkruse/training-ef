@@ -14,5 +14,6 @@ namespace TrainingEfBE.API.Users
         User AddUser(User user);
         User UpdateUser(User user);
         bool DeleteUser(int userID);
+        List<User> GetUsersByRoomID(int RoomID);
     }
 }

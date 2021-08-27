@@ -32,6 +32,12 @@ namespace TrainingEfBE.Controllers
             return _postAPI.GetPosts();
         }
 
+        [HttpGet("byRID/{id}")]
+        public List<Post> GetPostsByRoomID([FromRoute] int id)
+        {
+            return _postAPI.GetPostsByRoomID(id);
+        }
+
         [HttpGet("byPID/{id}")]
         public IActionResult GetPostByPID([FromRoute] int id)
         {
@@ -98,6 +104,54 @@ namespace TrainingEfBE.Controllers
             if (_post == null)
             {
                 ModelState.AddModelError("Error", "Post not found");
+                return BadRequest(ModelState);
+            }
+
+            _postAPI.UpdatePost(post);
+            return Ok();
+
+        }
+
+        [HttpPut("upvote/{userID}")]
+        public IActionResult Updvote([FromBody] Post post, [FromRoute] int userID)
+        {
+            Post _post = _postAPI.GetPostByPID(post.PostID);
+
+            if (_post == null)
+            {
+                ModelState.AddModelError("Error", "Post not found");
+                return BadRequest(ModelState);
+            }
+
+            bool successfullyUpvoted = _postAPI.AddUserUpvote(post.PostID, userID);
+
+            if (!successfullyUpvoted)
+            {
+                ModelState.AddModelError("Error", "You have already upvoted this post today");
+                return BadRequest(ModelState);
+            }
+
+            _postAPI.UpdatePost(post);
+            return Ok();
+
+        }
+
+        [HttpPut("downvote/{userID}")]
+        public IActionResult Downvote([FromBody] Post post, [FromRoute] int userID)
+        {
+            Post _post = _postAPI.GetPostByPID(post.PostID);
+
+            if (_post == null)
+            {
+                ModelState.AddModelError("Error", "Post not found");
+                return BadRequest(ModelState);
+            }
+
+            bool successfullyDownvoted = _postAPI.AddUserDownvote(post.PostID, userID);
+
+            if (!successfullyDownvoted)
+            {
+                ModelState.AddModelError("Error", "You have already downvoted this post today");
                 return BadRequest(ModelState);
             }
 

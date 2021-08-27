@@ -49,5 +49,10 @@ namespace TrainingEfBE.API.Users
         {
             return _userData.DeleteUser(userID);
         }
+
+        public List<User> GetUsersByRoomID(int RoomID)
+        {
+            return _userData.GetUsersByRoomID(RoomID);
+        }
     }
 }

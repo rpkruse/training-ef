@@ -47,7 +47,13 @@ namespace TrainingEfBE.Controllers
             return Ok(user);
         }
 
-        
+        [HttpGet("byRID/{id}")]
+        public List<User> GetUsersByRoomID([FromRoute] int id)
+        {
+            return _userAPI.GetUsersByRoomID(id);
+        }
+
+
         [HttpPost]
         public IActionResult PostUser([FromBody] User user)
         {
@@ -60,7 +66,8 @@ namespace TrainingEfBE.Controllers
             }
 
             // We can go over password hashing later
-            //user.Password = Crypto.HashPassword(user.Password);
+            user.Password = Crypto.HashPassword(user.Password);
+
 
             _user = _userAPI.AddUser(user);
 
@@ -75,9 +82,11 @@ namespace TrainingEfBE.Controllers
 
         [HttpPost("login")]
         public IActionResult AttempLogin([FromBody] User user) {
-            User _user = _userAPI.GetUser(user.Username);
 
-            if (_user == null || (user.Password != _user.Password))
+            User _user = _userAPI.GetUser(user.Username);
+            bool passMatches = Crypto.VerifyHashedPassword(_user.Password, user.Password);
+
+            if (_user == null || !passMatches)
             {
                 ModelState.AddModelError("Error", "Invalid username/password");
                 return BadRequest(ModelState);
@@ -87,7 +96,9 @@ namespace TrainingEfBE.Controllers
             return Ok(_user);
         }
 
-        [HttpDelete("{id}")]
+
+
+            [HttpDelete("{id}")]
         public IActionResult DeleteUser([FromRoute] int id)
         {
             User user = _userAPI.GetUser(id);

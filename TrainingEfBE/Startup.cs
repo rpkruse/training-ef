@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Serialization;
 using TrainingEfBE.Models;
 
 namespace TrainingEfBE
@@ -30,8 +31,8 @@ namespace TrainingEfBE
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DATABASE"); //DEV
-            //string connection = Environment.GetEnvironmentVariable("DATABASE"); //PROD
+            //string connection = Configuration.GetConnectionString("DATABASE"); //DEV
+            string connection = Environment.GetEnvironmentVariable("DATABASE"); //PROD
 
 
 
@@ -44,7 +45,7 @@ namespace TrainingEfBE
             //var authSettings = Configuration.GetSection("AuthSettings");
             //services.Configure<AuthSettings>(authSettings);
 
-            // string secret = authSettings.Get<AuthSettings>().SECRET; //DEV
+            //string secret = authSettings.Get<AuthSettings>().SECRET; //DEV
             //string secret = Environment.GetEnvironmentVariable("SECRET"); //PROD
 
             //var key = Encoding.UTF8.GetBytes(secret);
@@ -82,7 +83,10 @@ namespace TrainingEfBE
                    });
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
         }
 
