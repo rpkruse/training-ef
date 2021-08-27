@@ -91,7 +91,7 @@ namespace TrainingEfBE.Controllers
                 ModelState.AddModelError("Error", "Invalid username/password");
                 return BadRequest(ModelState);
             }
-            _user.Password = null;
+            //_user.Password = null;
 
             return Ok(_user);
         }
